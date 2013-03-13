@@ -70,7 +70,8 @@ function cleaner_gallery( $output, $attr ) {
 		'include'     => '',
 		'exclude'     => '',
 		'numberposts' => -1,
-		'offset'      => ''
+		'offset'      => '',
+		'mime_type'   => 'image',
 	);
 
 	/* Apply filters to the default arguments. */
@@ -83,6 +84,10 @@ function cleaner_gallery( $output, $attr ) {
 	$attr = shortcode_atts( $defaults, $attr );
 	extract( $attr );
 	$id = intval( $id );
+
+	/* We can't tell size for anything but images in wp_get_attachment_link() */
+	if ( "image" != $mime_type && "thumbnail" == $size )
+		$size = "";
 
 	/* Arguments for get_children(). */
 	$children = array(
@@ -121,7 +126,11 @@ function cleaner_gallery( $output, $attr ) {
 	$columns = apply_filters( 'cleaner_gallery_columns', intval( $columns ), $attachment_count, $attr );
 
 	/* Open the gallery <div>. */
-	$output = "\n\t\t\t<div id='gallery-{$id}-{$cleaner_gallery_instance}' class='gallery gallery-{$id}'>";
+	if ( is_array( $mime_type ) )
+		$mime_type = implode( "-", $mime_type );
+	$mime_type = sanitize_title( $mime_type );
+
+	$output = "\n\t\t\t<div id='gallery-{$id}-{$cleaner_gallery_instance}' class='gallery gallery-{$id} gallery-{$mime_type}'>";
 
 	/* Loop through each attachment. */
 	foreach ( $attachments as $attachment ) {
