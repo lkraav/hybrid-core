@@ -61,13 +61,13 @@ function cleaner_caption( $output, $attr, $content ) {
 	$attr = shortcode_atts( $defaults, $attr );
 
 	/* If the width is less than 1 or there is no caption, return the content wrapped between the [caption] tags. */
-	if ( 1 > $attr['width'] || empty( $attr['caption'] ) )
+	if ( empty( $attr['caption'] ) )
 		return $content;
 
 	/* Set up the attributes for the caption <div>. */
 	$attributes = ( !empty( $attr['id'] ) ? ' id="' . esc_attr( $attr['id'] ) . '"' : '' );
 	$attributes .= ' class="wp-caption ' . esc_attr( $attr['align'] ) . '"';
-	$attributes .= ' style="max-width: ' . esc_attr( $attr['width'] ) . 'px"';
+	if ( ! 1 > $attr['width'] ) $attributes .= ' style="max-width: ' . esc_attr( $attr['width'] ) . 'px"';
 
 	/* Open the caption <div>. */
 	$output = '<figure' . $attributes .'>';
