@@ -72,6 +72,11 @@ function cleaner_gallery( $output, $attr ) {
 		'numberposts' => -1,
 		'offset'      => '',
 		'mime_type'   => 'image',
+        'class'       => apply_filters( 'cleaner_gallery_class', '' ),
+        'row_class'   => apply_filters( 'cleaner_gallery_row_class', '' ),
+        'icon_class'  => apply_filters( 'cleaner_gallery_icon_class', '' ),
+        'item_class'  => apply_filters( 'cleaner_gallery_item_class', '' ),
+        'caption_class' => apply_filters( 'cleaner_gallery_caption_class', '' ),
 	);
 
 	/* Apply filters to the default arguments. */
@@ -130,17 +135,17 @@ function cleaner_gallery( $output, $attr ) {
 		$mime_type = implode( "-", $mime_type );
 	$mime_type = sanitize_title( $mime_type );
 
-	$output = "\n\t\t\t<div id='gallery-{$id}-{$cleaner_gallery_instance}' class='gallery gallery-{$id} gallery-{$mime_type}'>";
+    $output = "\n\t\t\t<div id='gallery-{$id}-{$cleaner_gallery_instance}' class='gallery gallery-{$id} gallery-{$mime_type} {$class}'>";
 
 	/* Loop through each attachment. */
 	foreach ( $attachments as $attachment ) {
 
 		/* Open each gallery row. */
 		if ( $columns > 0 && $i % $columns == 0 )
-			$output .= "\n\t\t\t\t<div class='gallery-row gallery-col-{$columns} gallery-clear'>";
+            $output .= "\n\t\t\t\t<div class='gallery-row gallery-col-{$columns} gallery-clear {$row_class}'>";
 
 		/* Open each gallery item. */
-		$output .= "\n\t\t\t\t\t<{$itemtag} class='gallery-item col-{$columns}'>";
+        $output .= "\n\t\t\t\t\t<{$itemtag} class='gallery-item col-{$columns} {$item_class}'>";
 
 		/* Get the image attachment meta. */
 		$image_meta  = wp_get_attachment_metadata( $id );
@@ -152,7 +157,7 @@ function cleaner_gallery( $output, $attr ) {
 			$orientation = ( $image_meta['height'] > $image_meta['width'] ) ? 'portrait' : 'landscape';
 
 		/* Open the element to wrap the image. */
-		$output .= "\n\t\t\t\t\t\t<{$icontag} class='gallery-icon {$orientation}'>";
+        $output .= "\n\t\t\t\t\t\t<{$icontag} class='gallery-icon {$icon_class} {$orientation}'>";
 
 		/* Get the image. */
 		if ( isset( $attr['link'] ) && 'file' == $attr['link'] ) 
@@ -175,7 +180,7 @@ function cleaner_gallery( $output, $attr ) {
 
 		/* If image caption is set. */
 		if ( !empty( $caption ) )
-			$output .= "\n\t\t\t\t\t\t<{$captiontag} class='gallery-caption'>{$caption}</{$captiontag}>";
+            $output .= "\n\t\t\t\t\t\t<{$captiontag} class='gallery-caption {$caption_class}'>{$caption}</{$captiontag}>";
 
 		/* Close individual gallery item. */
 		$output .= "\n\t\t\t\t\t</{$itemtag}>";
